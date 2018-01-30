@@ -234,7 +234,7 @@
           <div class="shang_box">
             <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
             <div class="shang_tit">
-              <p>纯属好玩</p>
+              <p>喜欢就赏下吧</p>
             </div>
             <div class="shang_payimg">
               <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
@@ -466,32 +466,6 @@
 </script>
 
 <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
-
-  <script language="javascript">
-    $(function() {
-        $("a[title]").each(function() {
-            var a = $(this);
-            var title = a.attr('title');
-            if (title == undefined || title == "") return;
-            a.data('title', title).removeAttr('title').hover(
-
-            function() {
-                var offset = a.offset();
-                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
-                    top: offset.top - a.outerHeight() - 15,
-                    left: offset.left + a.outerWidth()/2 + 1
-                }).fadeIn(function() {
-                    var pop = $(this);
-                    setTimeout(function() {
-                        pop.remove();
-                    }, pop.text().length * 800);
-                });
-            }, function() {
-                $("#anchortitlecontainer").remove();
-            });
-        });
-    });
 </script>
 
 
