@@ -8,7 +8,7 @@
   
   
   
-  <title>RMQ-1 [查看更多] | Oitm&#39;s Space</title>
+  <title>RMQ-1-概念篇 [查看更多] | Oitm&#39;s Space</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -221,7 +221,7 @@
 
 <div class="post">
   <h1 class="article-title">
-    <span>RMQ-1 [查看更多]</span>
+    <span>RMQ-1-概念篇 [查看更多]</span>
   </h1>
   <div class="article-top-meta">
     <span>
@@ -267,19 +267,26 @@
 
   <div class="article-content">
     <div class="markdown-body">
-      <h3 id="消息模型"><a href="#消息模型" class="headerlink" title="消息模型"></a>消息模型</h3><p>  生产者生产并发布消息，经过msg队列queue，最后将消息发送到被订阅的消费者并消费。流程如下图<br>  <img src="/rmq/2019/01/30/pub_sub_model.png">  </p>
+      <h3 id="消息模型"><a href="#消息模型" class="headerlink" title="消息模型"></a>消息模型</h3><p>  生产者生产并发布消息，经过msg队列queue，最后将消息发送到被订阅的消费者并消费。大家可以根据下面几个图加深理解，或者先有个大体印象。<br>  <img src="/rmq/2019/01/30/rmq_arch.png"><br>  <img src="/rmq/2019/01/30/exchange.png">  </p>
 <h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h3><ul>
-<li>Topic<ul>
-<li>消息主题，一级消息类型，通过 <code>Topic</code> 对消息进行分类。</li>
-<li>注意跟tag的区别：<code>Topic</code>是对不同业务的消息进行分类，<code>Tag</code> 用于进一步区分某个<code>Topic</code>下的消息分类，<code>Tag</code>用于二级的分类。</li>
+<li>Server：<ul>
+<li>也就是Broker，接收客户端的连接</li>
 </ul>
 </li>
-<li>Tag<ul>
-<li>二级消息类型，上面已述。</li>
+<li>Connection<ul>
+<li>应用程序和Broker的连接。</li>
+</ul>
+</li>
+<li>Channel<ul>
+<li>网络信道，几乎所有的操作都是在Channel中进行，Channel是进行消息读写的通道。客户端可以建立多个Channel，每个Channel代表一个会话任务。</li>
+</ul>
+</li>
+<li>Virtural host<ul>
+<li>虚拟地址，用于进行逻辑隔离，最上层的消息路由，用于划分不同的服务上，一个VH里面可以有若干个Exchange和Queue。</li>
 </ul>
 </li>
 <li>Message<ul>
-<li>消息，业务开发中信息传递的载体。</li>
+<li>消息，业务开发中信息传递的载体。由Properties和Body组成。Properties可以对消息进行修饰（优先级、延迟等特性），Body就是实体内容。</li>
 </ul>
 </li>
 <li>Message ID<ul>
@@ -309,7 +316,7 @@
 </li>
 <li>Queue<ul>
 <li>队列是RMQ的内部对象，用于存储消息，是生产者和消费者之间消息传递的‘桥梁’。</li>
-<li>多个消费者可以订阅用一个Queue，这时Queue中的消息会被平群分摊给多个消费者，而不是每个消费者都收到消息进行处理</li>
+<li>多个消费者可以订阅同一个Queue，这时Queue中的消息会被平群分摊给多个消费者，而不是每个消费者都收到消息进行处理</li>
 </ul>
 </li>
 <li>Prefetch count<ul>
@@ -337,7 +344,7 @@
 </ul>
 </li>
 <li>Exchange Types （fanout、direct、topic、headers四种）<ul>
-<li>fanout：该路由规则非常简单，它会把所有发送到该Exchange的消息路由到所有与它绑定的Queue中</li>
+<li>fanout：该路由规则非常简单，不处理路由键，所有发送到该Exchange的消息都会被转发到与该Exchange绑定的Queue中，不走路由，该类型发送消息是最快的</li>
 <li>direct：把消息路由到那些binding key与routing key完全匹配的Queue中。</li>
 <li>topic： 和direct有点类似，但有区别 direct是完全匹配，而topic可以设置相关的匹配规则。<ul>
 <li>binding key与routing key 是句点号 <code>.</code> 分隔的字符串</li>
@@ -494,6 +501,12 @@
         <a href="/start/2019/01/10/" target="_self">辞旧迎新，新的一年，新的开始……2019加油！[查看更多]</a>
       </div>
     
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/rmq2/2019/02/21/" target="_self">RMQ-2-基础实操篇 [查看更多]</a>
+        <i class="iconfont icon-next"></i>
+      </div>
     
   </nav>
 
