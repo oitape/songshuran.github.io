@@ -14,7 +14,7 @@
       return; 
     }
 
-    password = prompt('Sorry! If you want to see the detail of this article, Ask me. Also you can guess!  —— Oitm');
+    password = prompt('Sorry! If you want to see the detail of this article, Ask me !!! \n Also you can guess !  —— By Oitm');
     password = sha256(password || '');
 
     if(passwords.includes(password)) {
