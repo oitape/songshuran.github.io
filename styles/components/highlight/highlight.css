@@ -30,7 +30,7 @@ pre code {
   text-shadow: none;
 }
 .highlight {
-  border-radius: 1px;
+  border-radius: 3px;
 }
 .highlight pre {
   border: none;
