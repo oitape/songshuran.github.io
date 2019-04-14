@@ -174,8 +174,11 @@
   </h1>
   
   <article class="passage-article">
-    <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>mac系统，使用最简单的方式 <code>brew install mongodb</code> , 也可以到<a href="https://www.mongodb.com/download-center" target="_blank" rel="noopener">【官网】</a>这里下载安装。其他系统自行查阅安装方式。</p>
-<h2 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h2><p>在写本文时，<a href="http://mongodb.github.io/mongo-java-driver/3.10/driver/getting-started/quick-start/" target="_blank" rel="noopener">【MONGODB JAVA DRIVER】</a>更新到的版本是：<code>3.10.1</code>， 所以我就采用最新的进行的学习使用。<br>项目导入：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.mongodb&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;mongodb-driver&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;3.10.1&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+    <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>mac系统，使用最简单的方式 <code>brew install mongodb</code> , 也可以到<a href="https://www.mongodb.com/download-center" target="_blank" rel="noopener">【官网】</a>这里下载安装。其他系统自行查阅安装方式。顺便讲下我们一般什么情况下采用MongoDB呢？</p>
+<pre><code>- 数据量比较大
+- 数据的价值比较低，如果丢失不会有多大影响
+- 写入操作比较频繁
+</code></pre><h2 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h2><p>在写本文时，<a href="http://mongodb.github.io/mongo-java-driver/3.10/driver/getting-started/quick-start/" target="_blank" rel="noopener">【MONGODB JAVA DRIVER】</a>更新到的版本是：<code>3.10.1</code>， 所以我就采用最新的进行的学习使用。<br>项目导入：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.mongodb&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;mongodb-driver&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;3.10.1&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
 <h2 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h2><p>这里因为代码中不怎么经常操作db、collection所以这部分的我就用原生的mongo命令来介绍，针对CRUD操作再做详细的说明</p>
 <h4 id="db、collection相关"><a href="#db、collection相关" class="headerlink" title="db、collection相关"></a>db、collection相关</h4><table>
 <thead>
