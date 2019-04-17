@@ -6,7 +6,7 @@
   <meta name="author" content="Oitm" />
   
   
-  <title>JWT | Oitm&#39;s Space</title>
+  <title>JSON WEB TOKEN | Oitm&#39;s Space</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -15,7 +15,7 @@
   
 
   
-  <meta name="description" content="JSON WEB TOKENJSON网络令牌（JWT）是JSON的基于开放标准（RFC 7519），用于创建访问令牌该断言权利要求中的一些数字。例如，服务器可以生成具有声明“以管理员身份登录”并将其提供给客户端的令牌。然后，客户端可以使用该令牌来证明它以管理员身份登录。令牌由一方的私钥（通常是服务器的）签名，以便双方（另一方已经通过一些合适且值得信赖的方式拥有相应的公钥）能够验证令牌是否合法。该令牌被设计为紧凑，[2] URL -safe，[3]和可用特别是在web浏览器 的单点登录（SSO）上下文。JWT声明通常可用于在身份提供者和服务提供者之间传递经过身份验证的用户的身份，或者业务流程所要求的任何其他类型的声明">
+  <meta name="description" content="JSON网络令牌（JWT）是JSON的基于开放标准（RFC 7519），用于创建访问令牌该断言权利要求中的一些数字。例如，服务器可以生成具有声明“以管理员身份登录”并将其提供给客户端的令牌。然后，客户端可以使用该令牌来证明它以管理员身份登录……">
 
   
 
@@ -170,7 +170,7 @@
     
   </div>
   <h1 class="passage-title">
-    JWT
+    JSON WEB TOKEN
   </h1>
   
   <article class="passage-article">
@@ -248,14 +248,16 @@
     <div class="site-footer-wrapper">
   <footer class="site-footer">
     
-      <div class="site-footer-col">
-        <h5 class="site-footer-title">系列教程</h5>
-        
-          <span class="site-footer-item">
-            <a href="https://godbmw.com/design-patterns/" target="_blank">设计模式手册</a>
-          </span>
-        
-      </div>
+      
+        <div class="site-footer-col">
+          <h5 class="site-footer-title">系列教程</h5>
+          
+            <span class="site-footer-item">
+              <a href="https://godbmw.com/design-patterns/" target="_blank">设计模式手册</a>
+            </span>
+          
+        </div>
+      
     
     <div class="site-footer-info">
       <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
@@ -285,23 +287,25 @@
         <input type="text">
         <i class="fa fa-search"></i>
       </div>
-      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
-        
-          <div>
-            <img src="/images/alipay.jpeg" alt="AliPay——Just Be Happy!">
-            
-              <p>AliPay——Just Be Happy!</p>
-            
-          </div>
-        
-          <div>
-            <img src="/images/wechat.jpeg" alt="WeChat——Just Be Happy!">
-            
-              <p>WeChat——Just Be Happy!</p>
-            
-          </div>
-        
-      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/images/alipay.jpeg" alt="AliPay——Just Be Happy!">
+              
+                <p>AliPay——Just Be Happy!</p>
+              
+            </div>
+          
+            <div>
+              <img src="/images/wechat.jpeg" alt="WeChat——Just Be Happy!">
+              
+                <p>WeChat——Just Be Happy!</p>
+              
+            </div>
+          
+        </div>
+      
       <div id="site-layer-welcome" style="display:none;"></div>
     </div>
   </div>
@@ -329,9 +333,11 @@
     <a href="javascript:void(0);" id="site-toggle-share-btn">
       <i class="fa fa-share-alt"></i>
     </a>
-    <a href="javascript:void(0);" id="site-reward">
-      <i class="fa fa-thumbs-up"></i>
-    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
     <a href="javascript:void(0);" id="back-top-btn">
       <i class="fa fa-chevron-up"></i>
     </a>
