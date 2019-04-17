@@ -14,7 +14,7 @@
       return; 
     }
 
-    password = prompt('Sorry! If you want to see the detail of this article, Ask me !!! \n Also you can guess !  —— By Oitm');
+    password = prompt('输入您的名称小写全拼 (例如: 李三 => lisan)');
     password = sha256(password || '');
 
     if(passwords.includes(password)) {
@@ -25,6 +25,15 @@
       window.location.href = root;
     }
   };
+
+  // print github and demo info
+  console.log(
+    '\n%c Theme-AD v2.6.0 %c' + 
+    ' 🎉 https://github.com/dongyuanxin/theme-ad 🎉\n' + 
+    '\n%c Preview Online %c' + 
+    ' 🔍 https://godbmw.com/ 🔍  \n' , 
+    'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', ''
+  );
 
   // article password auth
   auth();
