@@ -6,16 +6,16 @@
   <meta name="author" content="Oitm" />
   
   
-  <title>归档: 2019 | Oitm&#39;s Space</title>
+  <title>Cmd-Linux | Oitm&#39;s Space</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="Hexo, Theme-AD" />
+    <meta name="keywords" content="技术,linux," />
   
 
   
-  <meta name="description" content="Oitm&#39;s Space">
+  <meta name="description" content="Linux命令对应普通用户来说可能没有操作界面来的舒服些，但是作为开发人员，不管是前端、后端、other端，如果你不能熟练掌握常用的Linux命令，那将花费很多没必要的时间成本在日常的工作中、生活中……本文是我自己总结平时常用到的一些命令，记录下来，希望也能对看者有所帮助。">
 
   
 
@@ -42,7 +42,7 @@
     welcome: {"enable":false,"interval":30},
     start_time: "2019-01-10",
     passwords: ["30fde358b34772de141e11ba599e28f9f44aa80ae89aaf243b73e6b9b9ebc896", ],
-    is_post: false,
+    is_post: true,
     lock: false,
     author: "Oitm",
     share: {"twitter":true,"facebook":true,"weibo":true,"qq":true,"wechat":true},
@@ -152,73 +152,167 @@
 </nav>
 <div id="site-process"></div>
     <main>
-      <div class="timeline">
-  <h2 class="timeline-title">归档: 16篇</h2>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-10-24
+    </span>
+    
+      <span>
+        | <a href="/categories/技术/"><i class="fa fa-bookmark"></i>技术</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    Cmd-Linux
+  </h1>
   
-    
-      <h3 class="timeline-subtitle">2019</h3>
-    
-    <div class="timeline-item">
-      <time>2019-10-24</time>
-      <a target="_self" href="/passages/cmd-linux-1/">Cmd-Linux</a>
-    </div>
+  <article class="passage-article">
+    <h3 id="直接上"><a href="#直接上" class="headerlink" title="直接上"></a>直接上</h3><table>
+<thead>
+<tr>
+<th style="text-align:left">作用</th>
+<th style="text-align:left">命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">查看端口是否可访问</td>
+<td style="text-align:left"><code>telnet $host $port</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看机器所有套接字连接情况</td>
+<td style="text-align:left"><code>netstat -a</code>：列出当前所有连接 <br> <code>netstat -t</code>：列出当前所有TCP连接， 同理 <code>-u</code>为udp <br> <code>netstat -n</code> ：禁止域名解析<br> <code>netstat -ei</code>：输出网络接口 <br> <code>netstat -na</code>  &#124; <code>grep $port</code>：查看进程占用端口命令</td>
+</tr>
+<tr>
+<td style="text-align:left">查看端口被哪个进程占用</td>
+<td style="text-align:left"><code>lsof -i:8080</code></td>
+</tr>
+<tr>
+<td style="text-align:left">ls命令查看隐藏文件</td>
+<td style="text-align:left"><code>ls -ia</code></td>
+</tr>
+<tr>
+<td style="text-align:left">按照时间逆序查看文件列表</td>
+<td style="text-align:left"><code>ll -tr</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查询文件中字符出现位置以及所在行</td>
+<td style="text-align:left"><code>grep -n $str $fileName</code></td>
+</tr>
+<tr>
+<td style="text-align:left">递归查询字符在当前目录所有文件</td>
+<td style="text-align:left"><code>grep -rn $str *</code><br> <code>*</code> : 表示当前目录所有文件，也可以是某个文件名 <br> <code>-r</code> 是递归查找 <br> <code>-n</code> 是显示行号<br> <code>-R</code> 查找所有文件包含子目录<br> <code>-i</code> 忽略大小写</td>
+</tr>
+<tr>
+<td style="text-align:left">展示指定行内容</td>
+<td style="text-align:left"><code>sed -n 8p $fileName</code> ：显示第8行内容 <br> <code>sed -n 3,8p $fileName</code>：展示第3到8行内容</td>
+</tr>
+<tr>
+<td style="text-align:left">跳到文件某一行</td>
+<td style="text-align:left"><code>vi $fileName ——&gt; 输入冒号: ——&gt; 输入行号 ——&gt;enter</code></td>
+</tr>
+<tr>
+<td style="text-align:left">编辑文件时快速查找字符串位置</td>
+<td style="text-align:left"><code>vi $fileName ——&gt; 输入反斜杠 \ ——&gt; 输入字符串 ——&gt;enter</code></td>
+</tr>
+<tr>
+<td style="text-align:left">显示文件末尾多少行</td>
+<td style="text-align:left"><code>tail -n 5 $fileName</code>:显示文件末尾5行 <br> <code>tail -f $fileName</code>：查看文件实时日志</td>
+</tr>
+<tr>
+<td style="text-align:left">显示文件的开头部分文本</td>
+<td style="text-align:left"><code>head -n $number $fileName</code>:显示文件前number行 <br> <code>head -n -$number $fileName</code>:文件起始位置到倒数number行位置</td>
+</tr>
+<tr>
+<td style="text-align:left">查看系统相关用量</td>
+<td style="text-align:left"><code>free -h</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看进程pid</td>
+<td style="text-align:left"><code>ps -ef</code> <br> <code>ps -ef</code>&#124; <code>grep java</code> :根据名字筛选进程pid</td>
+</tr>
+<tr>
+<td style="text-align:left">杀死某个pid进程</td>
+<td style="text-align:left"><code>kill -9 $pid</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看某个进程用量</td>
+<td style="text-align:left"><code>top -p $pid</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看磁盘容量</td>
+<td style="text-align:left"><code>df -h</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看机器启动时间</td>
+<td style="text-align:left"><code>Uptime</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看机器的内核信息</td>
+<td style="text-align:left"><code>uname -a</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看文件多少行</td>
+<td style="text-align:left"><code>wc -l $fileName</code> <br> <code>-c</code>：统计字节数  <br><code>-l</code>：统计行数 <br> <code>-w</code>:统计字数</td>
+</tr>
+<tr>
+<td style="text-align:left">查看文件中字符串出现次数</td>
+<td style="text-align:left"><code>grep -o $str $fileName</code>&#124;<code>wc -l</code></td>
+</tr>
+</tbody>
+</table>
+<p>未完待续……</p>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#直接上"><span class="toc-text">直接上</span></a></li></ol>
+  </div>
+</aside>
   
-    
-    <div class="timeline-item">
-      <time>2019-10-24</time>
-      <a target="_self" href="/passages/cmd-linux/">Cmd-Linux</a>
-    </div>
+    <aside class="passage-copyright">
+      <div>本文作者: Oitm</div>
+      
+        <div>
+          原文链接: 
+          <a href="" target="_blank">https://songshuran.github.io/passages/cmd-linux-1/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议. 转载请注明出处!
+      </div>
+    </aside>
   
-    
-    <div class="timeline-item">
-      <time>2019-10-20</time>
-      <a target="_self" href="/passages/rz-sz/">Mac使用iTerm2配置rz、sz命令</a>
-    </div>
   
+    <div class="passage-tags">
+     
+      <a href="/tags/linux/"><i class="fa fa-tags"></i>linux</a>
     
-    <div class="timeline-item">
-      <time>2019-05-05</time>
-      <a target="_self" href="/passages/may-day/">五一·随笔</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-23</time>
-      <a target="_self" href="/passages/stream/">Java-Stream</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-17</time>
-      <a target="_self" href="/passages/jwt/">JSON WEB TOKEN</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-02</time>
-      <a target="_self" href="/passages/everyday-summary/">Everyday&#39;s Summary ——2019</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-03-31</time>
-      <a target="_self" href="/passages/bebusy/">BeBusy</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-03-30</time>
-      <a target="_self" href="/passages/mongo-driver-2/">Mongo学习与使用（二）</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-03-29</time>
-      <a target="_self" href="/passages/mongo-driver/">Mongo学习与使用（一）</a>
     </div>
   
 </div>
+
     </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
     
     <div class="site-footer-wrapper">
   <footer class="site-footer">
@@ -295,16 +389,16 @@
     <a href="javascript:void(0);" data-enable="false">
       <i class="fa fa-arrow-left"></i>
     </a>
-    <a href="/archives/2019/page/2/" data-enable="true">
+    <a href="/passages/cmd-linux/" data-enable="true">
       <i class="fa fa-arrow-right"></i>
     </a>
   </div>
   <div class="bottom-bar-right">
-    <a href="javascript:void(0);" data-enable="false" id="site-toc-show-btn">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
       <i class="fa fa-bars"></i>
     </a>
     
-      <a href="javascript:void(0);" data-enable="false">
+      <a href="#site-comment" data-enable="true">
         <i class="fa fa-commenting"></i>
       </a>
     
