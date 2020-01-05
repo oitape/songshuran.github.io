@@ -274,6 +274,23 @@
 <td style="text-align:left">查看ip地址</td>
 <td style="text-align:left"><code>ip addr</code></td>
 </tr>
+<tr>
+<td style="text-align:left">查看网关</td>
+<td style="text-align:left"><code>ip route</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看一个包是否安装</td>
+<td style="text-align:left"><code>rpm -qa openssh</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看所有监听端口</td>
+<td style="text-align:left"><code>ss -l</code> <br> ` ss -lntup</td>
+<td>grep ssh`  tcp 或者 udp socket服务监听的端口</td>
+</tr>
+<tr>
+<td style="text-align:left">systemctl</td>
+<td style="text-align:left"><code>systemctl status xxx.service</code> 查看xxx服务状态 <br> <code>systemctl start xxx.service</code> 启动xxx服务状态 <br><code>systemctl stop xxx.service</code> 停止xxx服务状态 <br><code>systemctl restart xxx.service</code> 重启xxx服务状态 <br><code>systemctl disable xxx.service</code> 开机不启动xxx服务状态 <br><code>systemctl enable xxx.service</code> 开机启动xxx服务状态</td>
+</tr>
 </tbody>
 </table>
 <p>未完待续……</p>
