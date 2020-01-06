@@ -206,10 +206,6 @@
 <td style="text-align:left"><code>lsof -i:8080</code></td>
 </tr>
 <tr>
-<td style="text-align:left">ls命令查看隐藏文件</td>
-<td style="text-align:left"><code>ls -ia</code></td>
-</tr>
-<tr>
 <td style="text-align:left">按照时间逆序查看文件列表</td>
 <td style="text-align:left"><code>ll -tr</code></td>
 </tr>
@@ -348,6 +344,14 @@
 <tr>
 <td style="text-align:left">同时创建多个文件</td>
 <td style="text-align:left"><code>touch {1..3}.txt</code> 或者 <code>touch {a..z}.txt</code></td>
+</tr>
+<tr>
+<td style="text-align:left">ls</td>
+<td style="text-align:left"><code>ls -ia</code>查看所有文件包括隐藏文件 <br> <code>ls -l</code>长格式显示目录下内容简写<code>ll</code> <br> <code>ll -tr</code>按照时间排序正序，不加r逆序</td>
+</tr>
+<tr>
+<td style="text-align:left">cp</td>
+<td style="text-align:left"><code>cp $filePath  $path</code>复制文件到目录 <br> <code>cp -r $dirPath  $path</code>复制文件夹到目录</td>
 </tr>
 </tbody>
 </table>
