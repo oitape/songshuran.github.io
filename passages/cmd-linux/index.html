@@ -222,12 +222,8 @@
 <td style="text-align:left"><code>sed -n 8p $fileName</code> ：显示第8行内容 <br> <code>sed -n 3,8p $fileName</code>：展示第3到8行内容</td>
 </tr>
 <tr>
-<td style="text-align:left">跳到文件某一行</td>
-<td style="text-align:left"><code>vi $fileName ——&gt; 输入冒号: ——&gt; 输入行号 ——&gt;enter</code></td>
-</tr>
-<tr>
-<td style="text-align:left">编辑文件时快速查找字符串位置</td>
-<td style="text-align:left"><code>vi $fileName ——&gt; 输入反斜杠 \ ——&gt; 输入字符串 ——&gt;enter</code></td>
+<td style="text-align:left">vi</td>
+<td style="text-align:left"><code>vi $fileName ——&gt; 冒号: ——&gt; 输入行号 ——&gt;enter</code>跳到文件某一行 <br> <code>vi $fileName ——&gt; 反斜杠/ ——&gt; 输入字符串 ——&gt;enter</code>编辑文件时快速查找字符串位置</td>
 </tr>
 <tr>
 <td style="text-align:left">显示文件末尾多少行</td>
@@ -259,7 +255,7 @@
 </tr>
 <tr>
 <td style="text-align:left">查看机器启动时间</td>
-<td style="text-align:left"><code>Uptime</code></td>
+<td style="text-align:left"><code>uptime</code></td>
 </tr>
 <tr>
 <td style="text-align:left">查看机器的内核信息</td>
@@ -356,6 +352,14 @@
 <tr>
 <td style="text-align:left">输出</td>
 <td style="text-align:left"><code>echo -n &#39;$str&#39;</code> 不换行输出 <br><code>echo -e &#39;$str&#39;</code>支持转义字符,比如<code>echo -e &#39;oitm\ntest&#39;</code>会换行输出oitm和test</td>
+</tr>
+<tr>
+<td style="text-align:left">设置主机名</td>
+<td style="text-align:left"><code>hostnamectl set-hostname oitm</code> 重新连接生效</td>
+</tr>
+<tr>
+<td style="text-align:left">查看内存、cpu、负载</td>
+<td style="text-align:left"><code>cat /proc/meminfo</code>;<code>cat /proc/cpuinfo</code>;<code>cat /proc/loadavg</code></td>
 </tr>
 </tbody>
 </table>
