@@ -210,12 +210,12 @@
 <td style="text-align:left"><code>ll -tr</code></td>
 </tr>
 <tr>
-<td style="text-align:left">查询文件中字符出现位置以及所在行</td>
-<td style="text-align:left"><code>grep -n $str $fileName</code></td>
+<td style="text-align:left">grep查找命令</td>
+<td style="text-align:left"><code>grep $str $fileName</code> 在文件中查找str <br> 选项如下：<b=r> <code>-v</code> 取反 排除带有查找str的行 <br> <code>-i</code> 不区分大小写 <br> <code>-n</code> 是显示行号 <br> <code>-R</code> 查找所有文件包括子目录 <br> <code>-w</code>按单词为单位匹配 比如：oitm,oitmm就查不到，可以理解为精准匹配</b=r></td>
 </tr>
 <tr>
 <td style="text-align:left">递归查询字符在当前目录所有文件</td>
-<td style="text-align:left"><code>grep -rn $str *</code><br> <code>*</code> : 表示当前目录所有文件，也可以是某个文件名 <br> <code>-r</code> 是递归查找 <br> <code>-n</code> 是显示行号<br> <code>-R</code> 查找所有文件包含子目录<br> <code>-i</code> 忽略大小写</td>
+<td style="text-align:left"><code>grep -rn $str *</code><br> <code>*</code> : 表示当前目录所有文件，也可以是某个文件名 <br> <code>-r</code> 是递归查找</td>
 </tr>
 <tr>
 <td style="text-align:left">展示指定行内容</td>
@@ -227,7 +227,7 @@
 </tr>
 <tr>
 <td style="text-align:left">显示文件末尾多少行</td>
-<td style="text-align:left"><code>tail -n 5 $fileName</code>:显示文件末尾5行 <br> <code>tail -f $fileName</code>：查看文件实时日志</td>
+<td style="text-align:left"><code>tail -n 5 $fileName</code>:显示=文件末尾5行 <br> <code>tail -f $fileName</code>：查看文件实时日志</td>
 </tr>
 <tr>
 <td style="text-align:left">显示文件的开头部分文本</td>
@@ -299,7 +299,7 @@
 </tr>
 <tr>
 <td style="text-align:left">Control + 字母</td>
-<td style="text-align:left"><code>Control + A</code> 移动到开头<br><code>Control + E</code>移动到末尾 <br> <code>Control + U</code>清空光标之前<br> <code>Control + K</code>清空光标之后 <br> <code>Control + W</code>清空光标前一个单词 <br> <code>Control + Y</code> 粘贴前面几个清空命令行移除的字符 <br> <code>Control + C</code>中断正在执行的任务 <br> <code>Control + H</code>清空光标之前一个字符 <br> <code>Control + D</code>退出命令行 <br> <code>Control + R</code>搜索命令行使用过的历史记录<br> <code>Control + L</code>清屏 和 clear类似 <br> <code>Control + Z</code>暂停终端正在执行的任务  <br> <code>Control + S</code>锁定终端 <br> <code>Control + Q</code>解除锁定</td>
+<td style="text-align:left"><code>Control + A</code> 移动到开头<br><code>Control + E</code>移动到末尾 <br> <code>Control + U</code>清空光标之前<br> <code>Control + K</code>清空光标之后 <br> <code>Control + W</code>清空光标前一个单词 <br> <code>Control + Y</code> 粘贴前面几个清空命令行移除的字符 <br> <code>Control + C</code>中断正在执行的任务 <br> <code>Control + H</code>清空光标之前一个字符 <br> <code>Control + D</code>退出命令行 <br> <code>Control + R</code>搜索命令行使用过的历史记录<br> <code>Control + L</code>清屏 和 clear类似 <br> <code>Control + Z</code>暂停终端正在执行的任务  <br> <code>Control + S</code>锁定终端 <br> <code>Control + Q</code>解除锁定 <br><code>Control + P</code>从最近执行的一条命令往前查看命令历史</td>
 </tr>
 <tr>
 <td style="text-align:left">获取上一条命令的最后部分(非整条命令)</td>
@@ -360,6 +360,10 @@
 <tr>
 <td style="text-align:left">查看内存、cpu、负载</td>
 <td style="text-align:left"><code>cat /proc/meminfo</code>;<code>cat /proc/cpuinfo</code>;<code>cat /proc/loadavg</code></td>
+</tr>
+<tr>
+<td style="text-align:left">替换字符</td>
+<td style="text-align:left"><code>tr &quot;a&quot; &quot;b&quot; &lt; $file</code>用a替换文件中所有b输出，文件内容不更改</td>
 </tr>
 </tbody>
 </table>
