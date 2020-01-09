@@ -211,7 +211,7 @@
 </tr>
 <tr>
 <td style="text-align:left">grep查找命令</td>
-<td style="text-align:left"><code>grep $str $fileName</code> 在文件中查找str <br> 选项如下：<b=r> <code>-v</code> 取反 排除带有查找str的行 <br> <code>-i</code> 不区分大小写 <br> <code>-n</code> 是显示行号 <br> <code>-R</code> 查找所有文件包括子目录 <br> <code>-w</code>按单词为单位匹配 比如：oitm,oitmm就查不到，可以理解为精准匹配</b=r></td>
+<td style="text-align:left"><code>grep $str $fileName</code> 在文件中查找str <br> 选项如下：<b=r> <code>-v</code> 取反 排除带有查找str的行 <br> <code>-i</code> 不区分大小写 <br> <code>-n</code> 是显示行号 <br> <code>-R</code> 查找所有文件包括子目录 <br> <code>-w</code>按单词为单位匹配 比如：oitm,oitmm就查不到，可以理解为精准匹配 <br> <code>-o</code>只输出匹配的内容</b=r></td>
 </tr>
 <tr>
 <td style="text-align:left">递归查询字符在当前目录所有文件</td>
@@ -364,6 +364,10 @@
 <tr>
 <td style="text-align:left">替换字符</td>
 <td style="text-align:left"><code>tr &quot;a&quot; &quot;b&quot; &lt; $file</code>用a替换文件中所有b输出，文件内容不更改</td>
+</tr>
+<tr>
+<td style="text-align:left">备份文件</td>
+<td style="text-align:left"><code>cp file{,.ori}</code> 等价于  <code>cp file file.ori</code></td>
 </tr>
 </tbody>
 </table>
