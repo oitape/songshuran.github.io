@@ -373,6 +373,10 @@
 <td style="text-align:left">查找目录下文件</td>
 <td style="text-align:left"><code>find $path -name $fileName</code> <br>  <code>find $path -type f -name $fileName</code> -type 选项按照文件类型查找  <br> <code>find $path -mtine +3</code> 三天前修改的文件； 3 从现在往前推三天修改的文件；-3：三天内修改的文件</td>
 </tr>
+<tr>
+<td style="text-align:left">打包文件</td>
+<td style="text-align:left"><code>tar -zcvf data.tar.gz ./data</code> 将当前data目录打包 选项：-z 压缩；-c创建；-v输出打包过程；-f文件；-x解压；-C 指定解压的路径；-h 对源文件进行打包（一般不加此参数，但打包软链接时不加会出问题）</td>
+</tr>
 </tbody>
 </table>
 <p>未完待续……</p>
