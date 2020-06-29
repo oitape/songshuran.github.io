@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Oitm" />
+  
+  
+  <title>Mongo学习与使用（一） | Oitm&#39;s Space</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="技术,后端,java," />
+  
+
+  
+  <meta name="description" content="MONGODB JAVA DRIVER (一)最近重构项目，使用到了MongoDB，之前也没了解过Mongo, 学了一段时间，感觉还挺有意思，总结下……">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"SLoyhxmUNwebNSFYdlACmIUm-gzGzoHsz","appkey":"af4FQwAP1VL5D6jIwP0Hksw3","comment":true,"timer":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-01-10",
+    passwords: ["30fde358b34772de141e11ba599e28f9f44aa80ae89aaf243b73e6b9b9ebc896", ],
+    is_post: true,
+    lock: false,
+    author: "Oitm",
+    share: {"twitter":true,"facebook":true,"weibo":true,"qq":true,"wechat":true},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script>
+
+  <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/images/bluesky.jpg">
+    <link rel="apple-touch-icon" href="/images/caizi.jpeg">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">Oitm's Space</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 简单|简简单单</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/about/" target="_self">关于</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/songshuran/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-03-29
+    </span>
+    
+      <span>
+        | <a href="/categories/技术/"><i class="fa fa-bookmark"></i>技术</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    Mongo学习与使用（一）
+  </h1>
+  
+  <article class="passage-article">
+    <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>mac系统，使用最简单的方式 <code>brew install mongodb</code> , 也可以到<a href="https://www.mongodb.com/download-center" target="_blank" rel="noopener">【官网】</a>这里下载安装。其他系统自行查阅安装方式。顺便讲下我们一般什么情况下采用MongoDB呢？</p>
+<pre><code>- 数据量比较大
+- 数据的价值比较低，如果丢失不会有多大影响
+- 写入操作比较频繁
+</code></pre><h2 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h2><p>在写本文时，<a href="http://mongodb.github.io/mongo-java-driver/3.10/driver/getting-started/quick-start/" target="_blank" rel="noopener">【MONGODB JAVA DRIVER】</a>更新到的版本是：<code>3.10.1</code>， 所以我就采用最新的进行的学习使用。<br>项目导入：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.mongodb&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;mongodb-driver&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;3.10.1&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h2><p>这里因为代码中不怎么经常操作db、collection所以这部分的我就用原生的mongo命令来介绍，针对CRUD操作再做详细的说明</p>
+<h4 id="db、collection相关"><a href="#db、collection相关" class="headerlink" title="db、collection相关"></a>db、collection相关</h4><table>
+<thead>
+<tr>
+<th style="text-align:left">作用</th>
+<th style="text-align:left">原生命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">数据库列表</td>
+<td style="text-align:left"><code>Show dbs</code></td>
+</tr>
+<tr>
+<td style="text-align:left">创建db</td>
+<td style="text-align:left"><code>Use  {DB_NAME}</code></td>
+</tr>
+<tr>
+<td style="text-align:left">当前使用db</td>
+<td style="text-align:left"><code>db</code> 回车</td>
+</tr>
+<tr>
+<td style="text-align:left">删除db</td>
+<td style="text-align:left"><code>db.dropDatabase()</code></td>
+</tr>
+<tr>
+<td style="text-align:left">创建集合</td>
+<td style="text-align:left"><code>db.createCollection(&quot;mycollection&quot;)</code></td>
+</tr>
+<tr>
+<td style="text-align:left">集合列表</td>
+<td style="text-align:left"><code>show collections</code></td>
+</tr>
+<tr>
+<td style="text-align:left">删除集合</td>
+<td style="text-align:left"><code>db.{COLLECTION_NAME}.drop()</code></td>
+</tr>
+<tr>
+<td style="text-align:left">终端清屏</td>
+<td style="text-align:left"><code>cls</code> 回车</td>
+</tr>
+</tbody>
+</table>
+<p>主要介绍这几个命令吧，这几个可能比较常用点。</p>
+<p><code>注：MongoDB 支持的数据类型</code></p>
+<blockquote>
+<p>String：字符串。存储数据常用的数据类型。在 MongoDB 中，UTF-8 编码的字符串才是合法的。<br>Integer：整型数值。用于存储数值。根据你所采用的服务器，可分为 32 位或 64 位。<br>Boolean：布尔值。用于存储布尔值（真/假）。<br>Double：双精度浮点值。用于存储浮点值。<br>Min/Max keys：将一个值与 BSON（二进制的 JSON）元素的最低值和最高值相对比。<br>Arrays：用于将数组或列表或多个值存储为一个键。<br>Timestamp：时间戳。记录文档修改或添加的具体时间。<br>Object：用于内嵌文档。<br>Null：用于创建空值。<br>Symbol：符号。该数据类型基本上等同于字符串类型，但不同的是，它一般用于采用特殊符号类型的语言。<br>Date：日期时间。用 UNIX 时间格式来存储当前日期或时间。你可以指定自己的日期时间：创建 Date 对象，传入年月日信息。<br>Object ID：对象 ID。用于创建文档的 ID。<br>Binary Data：二进制数据。用于存储二进制数据。<br>Code：代码类型。用于在文档中存储 JavaScript 代码。<br>Regular expression：正则表达式类型。用于存储正则表达式。    </p>
+</blockquote>
+<h4 id="CRUD操作"><a href="#CRUD操作" class="headerlink" title="CRUD操作"></a>CRUD操作</h4><table>
+<thead>
+<tr>
+<th style="text-align:left">作用</th>
+<th style="text-align:left">原生命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">查询</td>
+<td style="text-align:left"><code>db.{COLLECTION_NAME}.find()</code></td>
+</tr>
+<tr>
+<td style="text-align:left">插入</td>
+<td style="text-align:left"><code>db.{COLLECTION_NAME}.insert({document})</code></td>
+</tr>
+<tr>
+<td style="text-align:left">更新</td>
+<td style="text-align:left"><code>db.{COLLECTION_NAME}.update({document}, {$set,{document}})</code></td>
+</tr>
+<tr>
+<td style="text-align:left">删除</td>
+<td style="text-align:left"><code>db.{COLLECTION_NAME}.remove({document})</code></td>
+</tr>
+</tbody>
+</table>
+<p>先用这几个简单的命令介绍，有个大体印象，下面会详细进行介绍<br>先使用原生命令的进行CRUD操作， 再使用原生的 <code>DRIVER</code> java代码演示，这样能使大家理解的更好些，包括复杂的条件查询，分页，关联关系等等。</p>
+<p>开始之前先介绍下操作所用到的类<br><code>MongoConstants</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MongoConstants</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MONGO_CLASS = <span class="string">"_class"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MONGO_ID = <span class="string">"_id"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String ID = <span class="string">"id"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MONGO_CTIME = <span class="string">"ctime"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MONGO_MTIME = <span class="string">"mtime"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MONGO_SET = <span class="string">"$set"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MONGO_IN = <span class="string">"$in"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MONGO_OR = <span class="string">"$or"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>MongoConfig</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MongoConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;mongodb.url&#125;"</span>)</span><br><span class="line">    <span class="keyword">public</span> String mongoUrl;</span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;mongodb.database&#125;"</span>)</span><br><span class="line">    <span class="keyword">public</span> String mongoDatabase;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MongoClient <span class="title">mongoClient</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MongoClient();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 远程配置方法</span></span><br><span class="line"><span class="comment">//    @Bean</span></span><br><span class="line"><span class="comment">//    public MongoClient mongoClient() &#123;</span></span><br><span class="line"><span class="comment">//        MongoClientURI uri = new MongoClientURI(mongoUrl);</span></span><br><span class="line"><span class="comment">//        return new MongoClient(uri);</span></span><br><span class="line"><span class="comment">//    &#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MongoDatabase <span class="title">mongoDatabase</span><span class="params">(MongoClient mongoClient)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mongoClient.getDatabase(mongoDatabase);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MongoCollection&lt;Document&gt; <span class="title">articleCollection</span><span class="params">(MongoDatabase d)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> d.getCollection(Article.ARTICLE_COLLECTION);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h6 id="Insert"><a href="#Insert" class="headerlink" title="Insert"></a>Insert</h6><ul>
+<li><p>首先来创建个Collection，并插入一条数据，使用以下命令插入一条数据</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.article.insert(&#123;&quot;title&quot;:&quot;Oitm&quot;,&quot;url&quot;:&quot;test_url&quot;,&quot;author&quot;:&quot;oitm&quot;,&quot;tags&quot;:[&quot;java&quot;,&quot;mongo&quot;],&quot;visit_count&quot;:10000,&quot;ctime&quot;:Date(),&quot;mtime&quot;:Date()&#125;)</span><br></pre></td></tr></table></figure>
+<p>  其中<code>article</code>是collection的名字</p>
+<blockquote>
+<p>注意：如果不存在article这个collection执行以上命令会自动创建collection，并插入相应数据，自动创建主键<code>_id</code>字段。</p>
+</blockquote>
+</li>
+<li><p>java代码<br>  下面就开始Insert的java代码了</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testInsert</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ArrayList&lt;String&gt; tags = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    tags.add(<span class="string">"java"</span>);</span><br><span class="line">    tags.add(<span class="string">"mongo"</span>);</span><br><span class="line">    Document document = <span class="keyword">new</span> Document(Article.TITLE, <span class="string">"Oitm"</span>)</span><br><span class="line">            .append(Article.URL, <span class="string">"test_url"</span>)</span><br><span class="line">            .append(Article.AUTHOR, <span class="string">"oitm"</span>)</span><br><span class="line">            .append(Article.TAGS, tags)</span><br><span class="line">            .append(Article.VISIT_COUNT, <span class="number">10000</span>)</span><br><span class="line">            .append(Article.CTIME, <span class="keyword">new</span> Date())</span><br><span class="line">            .append(Article.MTIME, <span class="keyword">new</span> Date());</span><br><span class="line">    articleCollection.insertOne(document);</span><br><span class="line">    <span class="comment">// insertMany 一次插入多个的方法请自行尝试</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h6 id="Query"><a href="#Query" class="headerlink" title="Query"></a>Query</h6><ul>
+<li><p>原生命令</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//查询所有</span></span><br><span class="line"> db.article.find()</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据_id查询</span></span><br><span class="line"> db.article.find(&#123;<span class="string">"_id"</span>:ObjectId(<span class="string">"5c9ddd2f3d428cc67aed0598"</span>)&#125;)</span><br><span class="line"></span><br><span class="line"> <span class="comment">//AND查询</span></span><br><span class="line"> db.article.find(&#123;<span class="string">"title"</span>:<span class="string">"Oitm"</span>,<span class="string">"url"</span>:<span class="string">"test_url"</span>&#125;)</span><br><span class="line"></span><br><span class="line"> <span class="comment">//IN查询 （先创建Oitm1、Oitm2）</span></span><br><span class="line"> db.article.find(&#123;<span class="string">"title"</span>:&#123;<span class="string">"$in"</span>:[<span class="string">"Oitm1"</span>,<span class="string">"Oitm2"</span>]&#125;&#125;)</span><br><span class="line"></span><br><span class="line"> <span class="comment">//OR查询</span></span><br><span class="line"> db.article.find(&#123;<span class="string">"$or"</span>:[&#123;<span class="string">"title"</span>:<span class="string">"Oitm1"</span>&#125;,&#123;<span class="string">"title"</span>:<span class="string">"Oitm2"</span>&#125;]&#125;)</span><br><span class="line"> db.article.find(&#123;<span class="string">"$or"</span>:[&#123;<span class="string">"title"</span>:<span class="string">"Oitm1"</span>&#125;,&#123;<span class="string">"url"</span>:<span class="string">"test_url"</span>&#125;]&#125;)</span><br><span class="line"></span><br><span class="line"> <span class="comment">//排序 1 升序   -1 降序</span></span><br><span class="line"> db.article.find().sort(&#123;<span class="string">"title"</span>:<span class="number">1</span>&#125;)</span><br><span class="line"> db.article.find().sort(&#123;<span class="string">"title"</span>:-<span class="number">1</span>&#125;)</span><br><span class="line"></span><br><span class="line"> <span class="comment">//分页</span></span><br><span class="line"> db.article.find().skip(<span class="number">3</span>).limit(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"> <span class="comment">//因为测试就使用一张表，没有设计关联的表。下面我也举个根据dbRef查询的例子吧</span></span><br><span class="line"> db.collection.find(&#123;<span class="string">"field.$id"</span>:ObjectId(<span class="string">"xxxxxxxxxxxxxxxxxx"</span>)&#125;)</span><br><span class="line"> db.collection.find(&#123;<span class="string">"field.$ref"</span>:<span class="string">"relate collection name"</span>&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>java代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查询所有  cursor 记得要关闭</span></span><br><span class="line">    FindIterable&lt;Document&gt; documents = articleCollection.find();</span><br><span class="line">    <span class="keyword">try</span> (MongoCursor&lt;Document&gt; cursor = documents.iterator()) &#123;</span><br><span class="line">        <span class="keyword">while</span> (cursor.hasNext()) &#123;</span><br><span class="line">            Document document = cursor.next();</span><br><span class="line">            System.out.println(document);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据条件查询  两种均可</span></span><br><span class="line">    String id = <span class="string">"5c9ddd2f3d428cc67aed0598"</span>;</span><br><span class="line">    Document document = articleCollection.find(eq(MongoConstants.MONGO_ID, <span class="keyword">new</span> ObjectId(id))).first();</span><br><span class="line">    System.out.println(document);</span><br><span class="line">    Document document1 = articleCollection.find(<span class="keyword">new</span> Document(MongoConstants.MONGO_ID, <span class="keyword">new</span> ObjectId(id))).first();</span><br><span class="line">    System.out.println(document1);</span><br><span class="line"></span><br><span class="line"><span class="comment">//AND查询  </span></span><br><span class="line"><span class="comment">// 先创建  db.article.insert(&#123;"title":"Oitm2","url":"test_url2","author":"oitm","tags":["java","mongo"],"visit_count":10000,"ctime":Date(),"mtime":Date()&#125;)</span></span><br><span class="line">    Document document2 = <span class="keyword">new</span> Document(<span class="string">"title"</span>, <span class="string">"Oitm2"</span>).append(<span class="string">"url"</span>, <span class="string">"test_url2"</span>);</span><br><span class="line">    Document document3 = articleCollection.find(document2).first();</span><br><span class="line">    System.out.println(document3);</span><br><span class="line"></span><br><span class="line"><span class="comment">//IN查询 （先创建Oitm1、Oitm2）</span></span><br><span class="line">    ArrayList titles = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    titles.add(<span class="string">"Oitm1"</span>);</span><br><span class="line">    titles.add(<span class="string">"Oitm2"</span>);</span><br><span class="line">    <span class="keyword">try</span> (MongoCursor&lt;Document&gt; cursor = articleCollection.find().filter(in(Article.TITLE, titles)).iterator()) &#123;</span><br><span class="line">        <span class="keyword">while</span> (cursor.hasNext()) &#123;</span><br><span class="line">            Document document4 = cursor.next();</span><br><span class="line">            System.out.println(document4);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//OR查询</span></span><br><span class="line">    <span class="keyword">try</span> (MongoCursor&lt;Document&gt; cursor = articleCollection.find().filter(or(eq(Article.TITLE, <span class="string">"Oitm1"</span>), eq(Article.TITLE, <span class="string">"Oitm2"</span>))).iterator())&#123;</span><br><span class="line">        <span class="keyword">while</span> (cursor.hasNext()) &#123;</span><br><span class="line">            Document document5 = cursor.next();</span><br><span class="line">            System.out.println(document5);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">   </span><br><span class="line">    </span><br><span class="line"><span class="comment">// sort</span></span><br><span class="line">    MongoCursor&lt;Document&gt; iterator = articleCollection.find().sort(<span class="keyword">new</span> Document(Article.TITLE, -<span class="number">1</span>)).iterator();</span><br><span class="line">    <span class="keyword">while</span> (iterator.hasNext()) &#123;</span><br><span class="line">        Document document8 = iterator.next();</span><br><span class="line">        System.out.println(document8);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//分页</span></span><br><span class="line">    <span class="keyword">try</span> (MongoCursor&lt;Document&gt; iterator = articleCollection.find().skip(<span class="number">3</span>).limit(<span class="number">2</span>).iterator())&#123;</span><br><span class="line">        <span class="keyword">while</span> (iterator.hasNext()) &#123;</span><br><span class="line">            Document document9 = iterator.next();</span><br><span class="line">            System.out.println(document9);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//关联查询   此处只是举例子</span></span><br><span class="line">    Document document6 = <span class="keyword">new</span> Document(<span class="string">"fieldName"</span>, <span class="keyword">new</span> DBRef(<span class="string">"collection"</span>, <span class="string">"id"</span>));</span><br><span class="line">    Document document7 = articleCollection.find(document6).first();</span><br><span class="line">    System.out.println(document7);</span><br><span class="line"></span><br><span class="line">-----</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>写到这里感觉篇幅有点长了(其实是我想偷个懒)，剩下的 <code>Update</code>、<code>Delete</code>准备下篇写了，so 就到这里啦！ 上面介绍的并不是全部，这些能让大家更快的入门，掌握常用的数据操作，开发中遇到问题 还是要多到这里看看的 <a href="http://mongodb.github.io/mongo-java-driver/" target="_blank" rel="noopener">【MongoDB Java Driver】</a>。</p>
+<h4 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h4><p>你可以在这里查看到以上<a href="https://github.com/OitmPractice/mongo-pratice" target="_blank" rel="noopener">【源码】</a>，可以忽略源码中<code>spring-boot-starter-data-mongodb</code> 相关的内容…… 这个用着很简单，但不利于进一步理解相应操作的实现，如果为了方便可以用该库，使用相应的<code>MongoTemplate</code> 来进行CRUD操作。</p>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#项目"><span class="toc-text">项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据库操作"><span class="toc-text">数据库操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#db、collection相关"><span class="toc-text">db、collection相关</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CRUD操作"><span class="toc-text">CRUD操作</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#Insert"><span class="toc-text">Insert</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#Query"><span class="toc-text">Query</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#最后"><span class="toc-text">最后</span></a></li></ol></li></ol></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: Oitm</div>
+      
+        <div>
+          原文链接: 
+          <a href="" target="_blank">https://songshuran.github.io/passages/mongo-driver/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议. 转载请注明出处!
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/tags/后端/"><i class="fa fa-tags"></i>后端</a>
+     
+      <a href="/tags/java/"><i class="fa fa-tags"></i>java</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+      
+        <div class="site-footer-col">
+          <h5 class="site-footer-title">文章推荐</h5>
+          
+            <span class="site-footer-item">
+              <a href="https://songshuran.github.io/passages/rz-sz/" target="_blank">rz、sz命令</a>
+            </span>
+          
+        </div>
+      
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    
+      <div class="site-footer-info">
+        <i class="fa fa-at"></i> Email: happy_ran@outlook.com
+      </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <div class="site-layer-input-choose">
+          <a href="javascript:void(0);" title="Change Search Engine">Google</a>
+        </div>
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/images/alipay.jpeg" alt="AliPay——Just Be Happy!">
+              
+                <p>AliPay——Just Be Happy!</p>
+              
+            </div>
+          
+            <div>
+              <img src="/images/wechat.jpeg" alt="WeChat——Just Be Happy!">
+              
+                <p>WeChat——Just Be Happy!</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/mongo-driver-2/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/unspeakable/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+    <a id="share-btn-twitter" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-twitter"></i>
+    </a>
+  
+  
+    <a id="share-btn-facebook" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-facebook"></i>
+    </a>
+  
+  
+    <a id="share-btn-weibo" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-weibo"></i>
+    </a>
+  
+  
+    <a id="share-btn-qq" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-qq"></i>
+    </a>
+  
+  
+    <a id="share-btn-wechat" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-wechat"></i>
+    </a>
+  
+</div>
+    
+
+
+  <script async>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+
+
+
+
+    
+  </body>
+</html>

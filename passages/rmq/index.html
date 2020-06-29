@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Oitm" />
+  
+  
+  <title>RMQ-概念篇 [查看更多] | Oitm&#39;s Space</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="技术,后端,java," />
+  
+
+  
+  <meta name="description" content="初识RMQRocketMQ简单的讲是专业的消息中间件，是一个开源的AMQP的实现，为分布式应用提供异步解耦、合理占用资源降峰值、海量消息堆积、可靠到达、重试、无单点等的能力，在互联网应用中使用场景非常广泛。该组件由阿里研发，并且经历双11的洗礼，备受考验，超过9年的迭代，是非常值得我们学习和应用的一款消息中间件。引用官网的话 RabbitMQ is the most widely deployed open source message broker.">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"SLoyhxmUNwebNSFYdlACmIUm-gzGzoHsz","appkey":"af4FQwAP1VL5D6jIwP0Hksw3","comment":true,"timer":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-01-10",
+    passwords: ["30fde358b34772de141e11ba599e28f9f44aa80ae89aaf243b73e6b9b9ebc896", ],
+    is_post: true,
+    lock: false,
+    author: "Oitm",
+    share: {"twitter":true,"facebook":true,"weibo":true,"qq":true,"wechat":true},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script>
+
+  <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/images/bluesky.jpg">
+    <link rel="apple-touch-icon" href="/images/caizi.jpeg">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">Oitm's Space</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 简单|简简单单</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/about/" target="_self">关于</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/songshuran/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-01-30
+    </span>
+    
+      <span>
+        | <a href="/categories/技术/"><i class="fa fa-bookmark"></i>技术</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    RMQ-概念篇 [查看更多]
+  </h1>
+  
+  <article class="passage-article">
+    <h3 id="消息模型"><a href="#消息模型" class="headerlink" title="消息模型"></a>消息模型</h3><p>  生产者生产并发布消息，经过msg队列queue，最后将消息发送到被订阅的消费者并消费。大家可以根据下面几个图加深理解，或者先有个大体印象。<br>  <img src="/passages/rmq/rmq_arch.png"><br>  <img src="/passages/rmq/exchange.png">  </p>
+<h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h3><ul>
+<li>Server：<ul>
+<li>也就是Broker，接收客户端的连接</li>
+</ul>
+</li>
+<li>Connection<ul>
+<li>应用程序和Broker的连接。</li>
+</ul>
+</li>
+<li>Channel<ul>
+<li>网络信道，几乎所有的操作都是在Channel中进行，Channel是进行消息读写的通道。客户端可以建立多个Channel，每个Channel代表一个会话任务。</li>
+</ul>
+</li>
+<li>Virtural host<ul>
+<li>虚拟地址，用于进行逻辑隔离，最上层的消息路由，用于划分不同的服务上，一个VH里面可以有若干个Exchange和Queue。</li>
+</ul>
+</li>
+<li>Message<ul>
+<li>消息，业务开发中信息传递的载体。由Properties和Body组成。Properties可以对消息进行修饰（优先级、延迟等特性），Body就是实体内容。</li>
+</ul>
+</li>
+<li>Message ID<ul>
+<li>消息的全局唯一标识，每个消息会自动生成。</li>
+<li>注意：每次重试后，消息的ID都会重新生成</li>
+</ul>
+</li>
+<li>Message Key<ul>
+<li>业务标识，由  <code>Producer</code> 设置，唯一的标识业务逻辑，不能用Message ID。</li>
+</ul>
+</li>
+<li>Message Ack<ul>
+<li>消费者收到消息处理完成后返回的回执，RMQ收到回执之后才将消息从Queue中移除，不会重复发送或者发送给其他消费者。</li>
+</ul>
+</li>
+<li>Message durability<ul>
+<li>防止RMQ服务重启后，队列中的消息丢失，可以将Queue与Message都设置为可持久化的（durable）</li>
+</ul>
+</li>
+<li>Producer<ul>
+<li>消息生产者， 负责消息的生产和发送</li>
+</ul>
+</li>
+<li>Consumer<ul>
+<li>消息消费者，负责接收并消费消息，在里面处理收到消息后的业务逻辑</li>
+</ul>
+</li>
+<li>Queue<ul>
+<li>队列是RMQ的内部对象，用于存储消息，是生产者和消费者之间消息传递的‘桥梁’。</li>
+<li>多个消费者可以订阅同一个Queue，这时Queue中的消息会被平群分摊给多个消费者，而不是每个消费者都收到消息进行处理</li>
+</ul>
+</li>
+<li>Prefetch count<ul>
+<li>当多个消费者同时订阅同一个Queue的时候，Queue中的消息会平摊给多个消费者，这时如果某个消费者处理很慢，其他的消费者处理很快，这就导致资源的不合理应用，因此可以通过设置prefetchCount来限制Queue每次发送给每个消费者的消息数。</li>
+</ul>
+</li>
+<li>Exchange<ul>
+<li>看模型中，生产者将消息发布到Queue中，实际上这种事情是不会发生的。真实的情况是生产者将消息发送到Exchange，由Exchange将消息路由到一个或多个Queue中，通过不同的Exchange类型采用不同的路由策略（后面将会详细介绍）</li>
+</ul>
+</li>
+<li>Routing Key<ul>
+<li>消息发送给Exchange的时候，一般会通过Routing key，来指定消息的路由规则，Routing key需要与Exchange Type及Binding key联合使用才能最终生效。</li>
+<li>Routing key设定的长度限制为255 bytes</li>
+</ul>
+</li>
+<li>Binding<ul>
+<li>通过Binding将Exchange与Queue关联起来，这样RabbitMQ就知道如何正确地将消息路由到指定的Queue了。</li>
+</ul>
+</li>
+<li>Binding key<ul>
+<li>在绑定（Binding）Exchange与Queue的同时，一般会指定一个binding key</li>
+<li>消费者将消息发送给Exchange时，一般会指定一个routing key</li>
+<li>当binding key与routing key相匹配时，消息将会被路由到对应的Queue中</li>
+<li>binding key 并不是在所有情况下都生效，它依赖于Exchange Type，比如fanout类型的Exchange就会无视binding key，而是将消息路由到所有绑定到该Exchange的Queue。</li>
+</ul>
+</li>
+<li>Exchange Types （fanout、direct、topic、headers四种）<ul>
+<li>fanout：该路由规则非常简单，不处理路由键，所有发送到该Exchange的消息都会被转发到与该Exchange绑定的Queue中，不走路由，该类型发送消息是最快的</li>
+<li>direct：把消息路由到那些binding key与routing key完全匹配的Queue中。</li>
+<li>topic： 和direct有点类似，但有区别 direct是完全匹配，而topic可以设置相关的匹配规则。<ul>
+<li>binding key与routing key 是句点号 <code>.</code> 分隔的字符串</li>
+<li>binding key中可以有<code>*</code> 与 <code>#</code>两种字符用来做模糊匹配，<code>*</code>用于匹配一个单词，<code>#</code>用于匹配0-n个单词</li>
+</ul>
+</li>
+<li>headers<ul>
+<li>该类型是由发送的消息内容中的headers属性进行匹配，跟routing key与binding key无关</li>
+<li>在绑定Queue与Exchange时指定一组键值对</li>
+<li>消息发送到Exchange时，RMQ会取到该消息的headers，根据取到的键值对是否完全匹配Queue与Exchange绑定时指定的键值对，符合则消息会路由到该Queue，否则不会路由到该Queue</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>本文先介绍下RMQ的相关概念知识，在进一步学习RMQ之前，这些概念的理解是必不可少的，后面篇章会继续对RMQ的应用做详细介绍，祝大家学习愉快！<br>Thks for reading！</p>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#消息模型"><span class="toc-text">消息模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基础概念"><span class="toc-text">基础概念</span></a></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: Oitm</div>
+      
+        <div>
+          原文链接: 
+          <a href="" target="_blank">https://songshuran.github.io/passages/rmq/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议. 转载请注明出处!
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/tags/后端/"><i class="fa fa-tags"></i>后端</a>
+     
+      <a href="/tags/java/"><i class="fa fa-tags"></i>java</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+      
+        <div class="site-footer-col">
+          <h5 class="site-footer-title">文章推荐</h5>
+          
+            <span class="site-footer-item">
+              <a href="https://songshuran.github.io/passages/rz-sz/" target="_blank">rz、sz命令</a>
+            </span>
+          
+        </div>
+      
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    
+      <div class="site-footer-info">
+        <i class="fa fa-at"></i> Email: happy_ran@outlook.com
+      </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <div class="site-layer-input-choose">
+          <a href="javascript:void(0);" title="Change Search Engine">Google</a>
+        </div>
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/images/alipay.jpeg" alt="AliPay——Just Be Happy!">
+              
+                <p>AliPay——Just Be Happy!</p>
+              
+            </div>
+          
+            <div>
+              <img src="/images/wechat.jpeg" alt="WeChat——Just Be Happy!">
+              
+                <p>WeChat——Just Be Happy!</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/rmq2/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/start/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+    <a id="share-btn-twitter" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-twitter"></i>
+    </a>
+  
+  
+    <a id="share-btn-facebook" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-facebook"></i>
+    </a>
+  
+  
+    <a id="share-btn-weibo" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-weibo"></i>
+    </a>
+  
+  
+    <a id="share-btn-qq" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-qq"></i>
+    </a>
+  
+  
+    <a id="share-btn-wechat" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-wechat"></i>
+    </a>
+  
+</div>
+    
+
+
+  <script async>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+
+
+
+
+    
+  </body>
+</html>

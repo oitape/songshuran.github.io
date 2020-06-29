@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Oitm" />
+  
+  
+  <title>那些你知、不道的Linux命令 | Oitm&#39;s Space</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="技术,linux," />
+  
+
+  
+  <meta name="description" content="Linux命令对应普通用户来说可能没有操作界面来的舒服些，但是作为开发人员，不管是前端、后端、other端，如果你不能熟练掌握常用的Linux命令，那将花费很多没必要的时间成本在日常的工作中、生活中……本文是我自己总结平时常用到的一些命令，记录下来，希望也能对看着有所帮助。">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"SLoyhxmUNwebNSFYdlACmIUm-gzGzoHsz","appkey":"af4FQwAP1VL5D6jIwP0Hksw3","comment":true,"timer":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-01-10",
+    passwords: ["30fde358b34772de141e11ba599e28f9f44aa80ae89aaf243b73e6b9b9ebc896", ],
+    is_post: true,
+    lock: false,
+    author: "Oitm",
+    share: {"twitter":true,"facebook":true,"weibo":true,"qq":true,"wechat":true},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script>
+
+  <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/images/bluesky.jpg">
+    <link rel="apple-touch-icon" href="/images/caizi.jpeg">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">Oitm's Space</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 简单|简简单单</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/about/" target="_self">关于</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/songshuran/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-10-24
+    </span>
+    
+      <span>
+        | <a href="/categories/技术/"><i class="fa fa-bookmark"></i>技术</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    那些你知、不道的Linux命令
+  </h1>
+  
+  <article class="passage-article">
+    <h3 id="首先"><a href="#首先" class="headerlink" title="首先"></a>首先</h3><ul>
+<li><p>更新</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum update -y</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install tree nmap dos2unix lrzsz nc lsof wget tcpdump htop iftop iotop sysstat nethogs net-tools bash-completion vim-enhanced -y</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>贴下我更换的yum源</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -s -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo</span><br><span class="line">curl -s -o /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h3><table>
+<thead>
+<tr>
+<th style="text-align:left">作用</th>
+<th style="text-align:left">命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">查看端口是否可访问</td>
+<td style="text-align:left"><code>telnet $host $port</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看机器所有套接字连接情况</td>
+<td style="text-align:left"><code>netstat -a</code>：列出当前所有连接 <br> <code>netstat -t</code>：列出当前所有TCP连接， 同理 <code>-u</code>为udp <br> <code>netstat -n</code> ：禁止域名解析<br> <code>netstat -ei</code>：输出网络接口 <br> <code>netstat -na</code>  &#124; <code>grep $port</code>：查看进程占用端口命令</td>
+</tr>
+<tr>
+<td style="text-align:left">查看端口被哪个进程占用</td>
+<td style="text-align:left"><code>lsof -i:8080</code></td>
+</tr>
+<tr>
+<td style="text-align:left">按照时间逆序查看文件列表</td>
+<td style="text-align:left"><code>ll -tr</code></td>
+</tr>
+<tr>
+<td style="text-align:left">grep查找命令</td>
+<td style="text-align:left"><code>grep $str $fileName</code> 在文件中查找str <br> 选项如下：<b=r> <code>-v</code> 取反 排除带有查找str的行 <br> <code>-i</code> 不区分大小写 <br> <code>-n</code> 是显示行号 <br> <code>-R</code> 查找所有文件包括子目录 <br> <code>-w</code>按单词为单位匹配 比如：oitm,oitmm就查不到，可以理解为精准匹配 <br> <code>-o</code>只输出匹配的内容 <br> <code>-A</code> after过滤字符串和它之后多少行 <br> <code>-B</code> before 过滤字符串和它之前多少行 <br> <code>-C</code> 字符串之前和之后多少行</b=r></td>
+</tr>
+<tr>
+<td style="text-align:left">递归查询字符在当前目录所有文件</td>
+<td style="text-align:left"><code>grep -rn $str *</code><br> <code>*</code> : 表示当前目录所有文件，也可以是某个文件名 <br> <code>-r</code> 是递归查找</td>
+</tr>
+<tr>
+<td style="text-align:left">展示指定行内容</td>
+<td style="text-align:left"><code>sed -n 8p $fileName</code> ：显示第8行内容 <br> <code>sed -n 3,8p $fileName</code>：展示第3到8行内容</td>
+</tr>
+<tr>
+<td style="text-align:left">vi</td>
+<td style="text-align:left"><code>vi $fileName ——&gt; 冒号: ——&gt; 输入行号 ——&gt;enter</code>跳到文件某一行 <br> <code>vi $fileName ——&gt; 反斜杠/ ——&gt; 输入字符串 ——&gt;enter</code>编辑文件时快速查找字符串位置</td>
+</tr>
+<tr>
+<td style="text-align:left">显示文件末尾多少行</td>
+<td style="text-align:left"><code>tail -n 5 $fileName</code>:显示=文件末尾5行 <br> <code>tail -f $fileName</code>：查看文件实时日志</td>
+</tr>
+<tr>
+<td style="text-align:left">显示文件的开头部分文本</td>
+<td style="text-align:left"><code>head -n $number $fileName</code>:显示文件前number行 <br> <code>head -n -$number $fileName</code>:文件起始位置到倒数number行位置</td>
+</tr>
+<tr>
+<td style="text-align:left">查看系统相关用量</td>
+<td style="text-align:left"><code>free -h</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看进程pid</td>
+<td style="text-align:left"><code>ps -ef</code> <br> <code>ps -ef</code>&#124; <code>grep java</code> :根据名字筛选进程pid</td>
+</tr>
+<tr>
+<td style="text-align:left">杀死某个pid进程</td>
+<td style="text-align:left"><code>kill -9 $pid</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看某个进程用量</td>
+<td style="text-align:left"><code>top -p $pid</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看磁盘</td>
+<td style="text-align:left"><code>df -h</code> 查看block信息 <br> <code>df -i</code>查看inode信息</td>
+</tr>
+<tr>
+<td style="text-align:left">查看机器启动时间</td>
+<td style="text-align:left"><code>uptime</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看机器的内核信息</td>
+<td style="text-align:left"><code>uname -a</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看文件多少行</td>
+<td style="text-align:left"><code>wc -l $fileName</code> <br> <code>-c</code>：统计字节数  <br><code>-l</code>：统计行数 <br> <code>-w</code>:统计字数</td>
+</tr>
+<tr>
+<td style="text-align:left">查看文件中字符串出现次数</td>
+<td style="text-align:left"><code>grep -o $str $fileName</code>&#124;<code>wc -l</code></td>
+</tr>
+<tr>
+<td style="text-align:left">内核版本号</td>
+<td style="text-align:left"><code>uname -r</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看ip地址</td>
+<td style="text-align:left"><code>ip addr</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看网关</td>
+<td style="text-align:left"><code>ip route</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看一个包是否安装</td>
+<td style="text-align:left"><code>rpm -qa openssh</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看所有监听端口</td>
+<td style="text-align:left"><code>ss -l</code> <br> <code>ss -lntup</code>  &#124; <code>grep ssh</code>  tcp 或者 udp socket服务监听的端口</td>
+</tr>
+<tr>
+<td style="text-align:left">systemctl</td>
+<td style="text-align:left"><code>systemctl status xxx.service</code> 查看xxx服务状态 <br> <code>systemctl start xxx.service</code> 启动xxx服务 <br><code>systemctl stop xxx.service</code> 停止xxx服务 <br><code>systemctl restart xxx.service</code> 重启xxx服务 <br><code>systemctl disable xxx.service</code> 开机不启动xxx服务 <br><code>systemctl enable xxx.service</code> 开机启动xxx服务</td>
+</tr>
+<tr>
+<td style="text-align:left">图形化方式修改网络配置</td>
+<td style="text-align:left"><code>nmtui</code> 注意：修改完毕后记得 <code>systemctl restart network</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Control + 字母</td>
+<td style="text-align:left"><code>Control + A</code> 移动到开头<br><code>Control + E</code>移动到末尾 <br> <code>Control + U</code>清空光标之前<br> <code>Control + K</code>清空光标之后 <br> <code>Control + W</code>清空光标前一个单词 <br> <code>Control + Y</code> 粘贴前面几个清空命令行移除的字符 <br> <code>Control + C</code>中断正在执行的任务 <br> <code>Control + H</code>清空光标之前一个字符 <br> <code>Control + D</code>退出命令行 <br> <code>Control + R</code>搜索命令行使用过的历史记录<br> <code>Control + L</code>清屏 和 clear类似 <br> <code>Control + Z</code>暂停终端正在执行的任务  <br> <code>Control + S</code>锁定终端 <br> <code>Control + Q</code>解除锁定 <br><code>Control + P</code>从最近执行的一条命令往前查看命令历史</td>
+</tr>
+<tr>
+<td style="text-align:left">获取上一条命令的最后部分(非整条命令)</td>
+<td style="text-align:left"><code>Esc + .</code> 和 <code>!$</code>命令一样</td>
+</tr>
+<tr>
+<td style="text-align:left">获取最近使用以某字符串开头的命令</td>
+<td style="text-align:left">字符串前加<code>!</code>。比如：<code>!sys</code></td>
+</tr>
+<tr>
+<td style="text-align:left">命令行输入历史</td>
+<td style="text-align:left"><code>history</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看命令使用说明及其选项</td>
+<td style="text-align:left"><code>man + 命令</code> 或者 <code>命令 + --help</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看命令是否存在</td>
+<td style="text-align:left"><code>which + 命令</code></td>
+</tr>
+<tr>
+<td style="text-align:left">当前目录路径</td>
+<td style="text-align:left"><code>pwd</code></td>
+</tr>
+<tr>
+<td style="text-align:left">cd</td>
+<td style="text-align:left"><code>cd -</code>去上一次的目录 <br> <code>cd ..</code>去上一级的目录 <br> <code>cd ~</code>去用户目录 <br> <code>cd /</code>去根目录</td>
+</tr>
+<tr>
+<td style="text-align:left">目录以树状展示</td>
+<td style="text-align:left"><code>tree</code> <br>  <code>tree -L 1</code> 指定只显示一层,通过修改数字展示层数 <br> <code>tree -d $path</code>显示指定目录的树状层级</td>
+</tr>
+<tr>
+<td style="text-align:left">创建多级目录</td>
+<td style="text-align:left"><code>mkdir -p /a/b/c/d</code> 路径不存在自动创建父目录</td>
+</tr>
+<tr>
+<td style="text-align:left">同时创建多个文件</td>
+<td style="text-align:left"><code>touch {1..3}.txt</code> 或者 <code>touch {a..z}.txt</code></td>
+</tr>
+<tr>
+<td style="text-align:left">ls</td>
+<td style="text-align:left"><code>ls -ia</code>查看所有文件包括隐藏文件 <br> <code>ls -l</code>长格式显示目录下内容简写<code>ll</code> <br> <code>ll -tr</code>按照时间排序正序，不加r逆序</td>
+</tr>
+<tr>
+<td style="text-align:left">cp</td>
+<td style="text-align:left"><code>cp $filePath  $path</code>复制文件到目录 <br> <code>cp -r $dirPath  $path</code>复制文件夹到目录</td>
+</tr>
+<tr>
+<td style="text-align:left">输出</td>
+<td style="text-align:left"><code>echo -n &#39;$str&#39;</code> 不换行输出 <br><code>echo -e &#39;$str&#39;</code>支持转义字符,比如<code>echo -e &#39;oitm\ntest&#39;</code>会换行输出oitm和test</td>
+</tr>
+<tr>
+<td style="text-align:left">设置主机名</td>
+<td style="text-align:left"><code>hostnamectl set-hostname oitm</code> 重新连接生效</td>
+</tr>
+<tr>
+<td style="text-align:left">查看内存、cpu、负载</td>
+<td style="text-align:left"><code>cat /proc/meminfo</code>;<code>cat /proc/cpuinfo</code>;<code>cat /proc/loadavg</code></td>
+</tr>
+<tr>
+<td style="text-align:left">替换字符</td>
+<td style="text-align:left"><code>tr &quot;a&quot; &quot;b&quot; &lt; $file</code>用a替换文件中所有b输出，文件内容不更改</td>
+</tr>
+<tr>
+<td style="text-align:left">备份文件</td>
+<td style="text-align:left"><code>cp file{,.ori}</code> 等价于  <code>cp file file.ori</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查找目录下文件</td>
+<td style="text-align:left"><code>find $path -name $fileName</code> <br>  <code>find $path -type f -name $fileName</code> -type 选项按照文件类型查找  <br> <code>find $path -mtine +3</code> 三天前修改的文件； 3 从现在往前推三天修改的文件；-3：三天内修改的文件</td>
+</tr>
+<tr>
+<td style="text-align:left">打包文件</td>
+<td style="text-align:left"><code>tar -zcvf data.tar.gz ./data</code> 将当前data目录打包 选项：-z 压缩；-c创建；-v输出打包过程；-f文件；-x解压；-C 指定解压的路径；-h 对源文件进行打包（一般不加此参数，但打包软链接时不加会出问题）</td>
+</tr>
+<tr>
+<td style="text-align:left">查看文件属性</td>
+<td style="text-align:left"><code>stat $file</code> Access：文件被访问过的时间；Modify：文件内容被修改过的时间；Change：文件属性发生改变的时间</td>
+</tr>
+<tr>
+<td style="text-align:left">history</td>
+<td style="text-align:left"><code>-c</code>清空所有历史命令记录 <br> <code>-d</code> 指定数字清历史记录</td>
+</tr>
+<tr>
+<td style="text-align:left">ulimit</td>
+<td style="text-align:left"><code>ulimit -n</code> 查询最大的文件描述符(后面加数字 直接修改最大打开文件数)</td>
+</tr>
+<tr>
+<td style="text-align:left">查看机器开启的服务</td>
+<td style="text-align:left"><code>systemctl list-unit-files</code> &#124; <code>grep enabled</code></td>
+</tr>
+<tr>
+<td style="text-align:left">查看机器连接数</td>
+<td style="text-align:left"><code>netstat -an</code> &#124;<code>grep &#39;established&#39;</code>&#124; <code>wc -l</code></td>
+</tr>
+</tbody>
+</table>
+<p>未完待续……</p>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#首先"><span class="toc-text">首先</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#命令列表"><span class="toc-text">命令列表</span></a></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: Oitm</div>
+      
+        <div>
+          原文链接: 
+          <a href="" target="_blank">https://songshuran.github.io/passages/cmd-linux/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议. 转载请注明出处!
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/tags/linux/"><i class="fa fa-tags"></i>linux</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+      
+        <div class="site-footer-col">
+          <h5 class="site-footer-title">文章推荐</h5>
+          
+            <span class="site-footer-item">
+              <a href="https://songshuran.github.io/passages/rz-sz/" target="_blank">rz、sz命令</a>
+            </span>
+          
+        </div>
+      
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    
+      <div class="site-footer-info">
+        <i class="fa fa-at"></i> Email: happy_ran@outlook.com
+      </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <div class="site-layer-input-choose">
+          <a href="javascript:void(0);" title="Change Search Engine">Google</a>
+        </div>
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/images/alipay.jpeg" alt="AliPay——Just Be Happy!">
+              
+                <p>AliPay——Just Be Happy!</p>
+              
+            </div>
+          
+            <div>
+              <img src="/images/wechat.jpeg" alt="WeChat——Just Be Happy!">
+              
+                <p>WeChat——Just Be Happy!</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/nineteen/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/rz-sz/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+    <a id="share-btn-twitter" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-twitter"></i>
+    </a>
+  
+  
+    <a id="share-btn-facebook" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-facebook"></i>
+    </a>
+  
+  
+    <a id="share-btn-weibo" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-weibo"></i>
+    </a>
+  
+  
+    <a id="share-btn-qq" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-qq"></i>
+    </a>
+  
+  
+    <a id="share-btn-wechat" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-wechat"></i>
+    </a>
+  
+</div>
+    
+
+
+  <script async>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+
+
+
+
+    
+  </body>
+</html>
