@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Oitm" />
+  
+  
+  <title>RMQ-基础实操篇 [查看更多] | Oitm&#39;s Space</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="技术,后端,java," />
+  
+
+  
+  <meta name="description" content="RMQ上篇讲解了RMQ的基本概念，这篇来进入简单的实操篇啦！">
+
+  
+
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"SLoyhxmUNwebNSFYdlACmIUm-gzGzoHsz","appkey":"af4FQwAP1VL5D6jIwP0Hksw3","comment":false,"timer":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-01-10",
+    passwords: ["4ac6dd3ea6ad1dec5ebc75f4168f4772b27fad9478c2f40efd9539f78cfdd23e", ],
+    is_post: true,
+    lock: false,
+    author: "Oitm",
+    share: {"twitter":true,"facebook":true,"weibo":true,"qq":true,"wechat":true},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script>
+
+  <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/images/bluesky.jpg">
+    <link rel="apple-touch-icon" href="/images/caizi.jpeg">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">Oitm's Space</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 简单|简简单单</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/about/" target="_self">关于</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/songshuran/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-02-21
+    </span>
+    
+      <span>
+        | <a href="/categories/技术/"><i class="fa fa-bookmark"></i>技术</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    RMQ-基础实操篇 [查看更多]
+  </h1>
+  
+  <article class="passage-article">
+    <blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2></blockquote>
+<p>在开始这篇文章之前，希望新手能先阅读上篇的 <a href="https://songshuran.github.io/rmq/2019/01/30/">RMQ-1-概念篇</a> 内容，这在开始Coding之前是非常必要的。<br>接下来，就让我们愉快的开始本篇学习吧！^_^</p>
+<blockquote>
+<h2 id="RMQ安装"><a href="#RMQ安装" class="headerlink" title="RMQ安装"></a>RMQ安装</h2></blockquote>
+<p>个人使用的mac系统，所以在此，就以mac系统的安装进行讲解。其他系统的同学们还请自行<a href="https://www.rabbitmq.com/" target="_blank" rel="noopener"><code>官网</code></a>、<a href="https://www.google.com/" target="_blank" rel="noopener"><code>google</code></a> or <code>某度</code>进行查看搜索安装。<br>以下是我用mac安装的具体步骤，有些坑我会注明：</p>
+<ul>
+<li><p>采用brew进行安装，该命令会自动安装rmq需要依赖的所有软件，包括Erlang环境。</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install rabbitmq</span><br></pre></td></tr></table></figure>
+<p>  该命令执行需要花点时间，请耐心等待。<br>  等啊等……<br>  报错，<code>Could not symlink sbin/cuttlefish  /usr/local/sbin is not writable.</code><br>  安装失败<br>  -【哭】<br>  -【擦干，别哭】<br>  原因是rmq安装相关link不在bin目录下，而是在 /usr/local/sbin目录。解决办法：</p>
+<pre><code><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span></span><br><span class="line">sudo mkdir sbin (报错执行下面修改权限命令)</span><br><span class="line">sudo chown -R `whoami`:admin /usr/<span class="built_in">local</span>/sbin</span><br></pre></td></tr></table></figure>
+</code></pre></li>
+<li><p>修改 <code>.bash_profile</code> 文件，添加下面一行内容 （该文件是隐藏文件，需要打开系统隐藏文件显示，操作自行）</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/<span class="built_in">local</span>/sbin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使修改生效</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span>  .bash_profile</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>开启rmq的插件可用，也就是rmq的管理平台 rabbitmq_management</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmq-plugins <span class="built_in">enable</span> rabbitmq_management</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动rabbitmq</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmq-server   回车</span><br></pre></td></tr></table></figure>
+<p>  如果你在终端看到如下就说明你已经安装成功啦</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">##  ##</span><br><span class="line">##  ##      RabbitMQ 3.7.12. Copyright (C) 2007-2019 Pivotal Software, Inc.</span><br><span class="line">##########  Licensed under the MPL.  See http://www.rabbitmq.com/</span><br><span class="line">######  ##</span><br><span class="line">##########  Logs: /usr/local/var/log/rabbitmq/rabbit@localhost.log</span><br><span class="line">                    /usr/local/var/log/rabbitmq/rabbit@localhost_upgrade.log</span><br><span class="line"></span><br><span class="line">          Starting broker...</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>浏览器打开  <a href="http://localhost:15672" target="_blank" rel="noopener">http://localhost:15672</a>  。如你所见，成功啦。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">默认账号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">账号</td>
+<td style="text-align:left"><code>guest</code></td>
+</tr>
+<tr>
+<td style="text-align:left">密码</td>
+<td style="text-align:left"><code>guest</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<h2 id="RMQ基本功能实操"><a href="#RMQ基本功能实操" class="headerlink" title="RMQ基本功能实操"></a>RMQ基本功能实操</h2></blockquote>
+<p>终于到了大家最喜欢的Coding环节了 [神秘微笑]，好🐔动啊。哈哈嘎嘎哈哈嘎嘎嘎……<br>本篇主要从<code>Exchange</code>的四种<code>type</code>的运用开始讲解。<br>在开始之前先讲解下rmq中connection和channel的创建，因为后面四种类型都需要这部分内容，我是同意建在一个叫<code>ChannelFactory</code>的类中<br>这部分的代码比较简单：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Channel channel;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Connection connection;</span><br><span class="line">   <span class="comment">/** </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>: 获取channel对象</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Param</span>: []</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Return</span>: com.rabbitmq.client.Channel</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Channel <span class="title">createChannel</span><span class="params">()</span> <span class="keyword">throws</span> IOException, TimeoutException </span>&#123;</span><br><span class="line">	ConnectionFactory connectionFactory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line"></span><br><span class="line">	connectionFactory.setHost(<span class="string">"127.0.0.1"</span>);</span><br><span class="line">	connectionFactory.setPort(<span class="number">5672</span>);</span><br><span class="line">	connectionFactory.setVirtualHost(<span class="string">"/"</span>);</span><br><span class="line">	connectionFactory.setAutomaticRecoveryEnabled(<span class="keyword">true</span>);</span><br><span class="line">	connectionFactory.setNetworkRecoveryInterval(<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line">	connection = connectionFactory.newConnection();</span><br><span class="line">	channel = connection.createChannel();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> channel;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/** </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>: 使用完毕后释放资源</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Param</span>: []</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Return</span>: void</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">closeResource</span><span class="params">()</span> <span class="keyword">throws</span> IOException, TimeoutException </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (channel!=<span class="keyword">null</span>)&#123;</span><br><span class="line">		channel.close();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (connection!=<span class="keyword">null</span>)&#123;</span><br><span class="line">		connection.close();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>此外还有静态常量类和枚举需要用到，内容如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Constants</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DIRECT_EXCHANGE_NAME = <span class="string">"type_direct_exchange"</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DIRECT_ROUTING_KEY = <span class="string">"direct.route"</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String FANOUT_EXCHANGE_NAME = <span class="string">"type_fanout_exchange"</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TOPIC_EXCHANGE_NAME = <span class="string">"type_topic_exchange"</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MESSAGE = <span class="string">"Hello World, Just be Happy!"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> ExchangeType &#123;</span><br><span class="line"></span><br><span class="line">	DIRECT(<span class="string">"direct"</span>),</span><br><span class="line">	TOPIC(<span class="string">"topic"</span>),</span><br><span class="line">	FANOUT(<span class="string">"fanout"</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> String type;</span><br><span class="line">	ExchangeType(String type) &#123;</span><br><span class="line">		<span class="keyword">this</span>.type = type;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getType</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> type;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setType</span><span class="params">(String type)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.type = type;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><p>fanout 类型的Exchange</p>
+<p>  在基础概念篇中也讲解了这个类型，这是最简单的一种类型，发送到该类型Exchange的消息都会被转发到与该Exchange绑定的Queue中，不需要考虑路由键，不走路由所以处理消息是最快的。</p>
+<ul>
+<li><p>ExchangeTypeFanoutProducer</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Channel channel = ChannelFactory.createChannel();</span><br><span class="line"><span class="comment">//发送</span></span><br><span class="line">channel.basicPublish(Constants.FANOUT_EXCHANGE_NAME, <span class="string">""</span>, </span><br><span class="line">        <span class="keyword">null</span>, Constants.MESSAGE.getBytes());</span><br><span class="line"><span class="comment">//关闭资源</span></span><br><span class="line">ChannelFactory.closeResource();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ExchangeTypeFanoutConsumer</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Channel channel = ChannelFactory.createChannel();</span><br><span class="line">String queueName = <span class="string">"fanout_queue"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 交换机声明，具体参数含义查看文档基本都能看的明白</span></span><br><span class="line">channel.exchangeDeclare(Constants.FANOUT_EXCHANGE_NAME, ExchangeType.FANOUT.getType(),</span><br><span class="line">        <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 队列声明</span></span><br><span class="line">channel.queueDeclare(queueName, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绑定关系</span></span><br><span class="line">channel.queueBind(queueName, Constants.FANOUT_EXCHANGE_NAME, <span class="string">""</span>);</span><br><span class="line"></span><br><span class="line">DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; &#123;</span><br><span class="line">    String message = <span class="keyword">new</span> String(delivery.getBody(), <span class="string">"UTF-8"</span>);</span><br><span class="line">    System.out.println(<span class="string">" Received'"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">&#125;;</span><br><span class="line">channel.basicConsume(queueName, <span class="keyword">true</span>, deliverCallback, consumerTag -&gt; &#123;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>direct 类型的Exchange （具体看上篇）</p>
+<ul>
+<li><p>ExchangeTypeDirectProducer</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">HashMap&lt;String, Object&gt; headers = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">headers.put(<span class="string">"header_key"</span>,<span class="string">"header_value"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//顺便在这里演示下properties的用法</span></span><br><span class="line">AMQP.BasicProperties properties = <span class="keyword">new</span> AMQP.BasicProperties.Builder()</span><br><span class="line">        .contentEncoding(<span class="string">"UTF-8"</span>)</span><br><span class="line">        .headers(headers)</span><br><span class="line">        .deliveryMode(<span class="number">2</span>)</span><br><span class="line">        .expiration(<span class="string">"60000"</span>)</span><br><span class="line">        .build();</span><br><span class="line"></span><br><span class="line">Channel channel = ChannelFactory.createChannel();</span><br><span class="line">channel.basicPublish(Constants.DIRECT_EXCHANGE_NAME,</span><br><span class="line">        Constants.DIRECT_ROUTING_KEY, properties, Constants.MESSAGE.getBytes());</span><br><span class="line"></span><br><span class="line">ChannelFactory.closeResource();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ExchangeTypeDirectConsumer</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Channel channel = ChannelFactory.createChannel();</span><br><span class="line"></span><br><span class="line">String queueName = <span class="string">"direct_queue"</span>;</span><br><span class="line"><span class="comment">// 交换机声明，具体参数含义查看文档基本都能看的明白</span></span><br><span class="line">channel.exchangeDeclare(Constants.DIRECT_EXCHANGE_NAME, ExchangeType.DIRECT.getType(),</span><br><span class="line">        <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 队列声明</span></span><br><span class="line">channel.queueDeclare(queueName, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绑定关系</span></span><br><span class="line">channel.queueBind(queueName, Constants.DIRECT_EXCHANGE_NAME, Constants.DIRECT_ROUTING_KEY);</span><br><span class="line"></span><br><span class="line">DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; &#123;</span><br><span class="line">    String message = <span class="keyword">new</span> String(delivery.getBody(), <span class="string">"UTF-8"</span>);</span><br><span class="line">    System.out.println(<span class="string">" Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">    <span class="comment">// 获取properties中的内容</span></span><br><span class="line">    AMQP.BasicProperties properties = delivery.getProperties();</span><br><span class="line">    System.out.println(<span class="string">"headers:"</span> + properties.getHeaders());</span><br><span class="line">    System.out.println(<span class="string">"encoding:"</span> + properties.getContentEncoding());</span><br><span class="line">&#125;;</span><br><span class="line">channel.basicConsume(queueName, <span class="keyword">true</span>, deliverCallback, consumerTag -&gt; &#123;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>topic 类型的Exchange （具体看上篇）</p>
+<ul>
+<li><p>ExchangeTypeTopicProducer</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Channel channel = ChannelFactory.createChannel();</span><br><span class="line">String routingKey1 = <span class="string">"routing.key1"</span>;</span><br><span class="line">String routingKey2 = <span class="string">"routing.key2"</span>;</span><br><span class="line">String routingKey3 = <span class="string">"routing.key2.key"</span>;</span><br><span class="line">channel.basicPublish(Constants.TOPIC_EXCHANGE_NAME, routingKey1, <span class="keyword">null</span>, Constants.MESSAGE.getBytes());</span><br><span class="line">channel.basicPublish(Constants.TOPIC_EXCHANGE_NAME, routingKey2, <span class="keyword">null</span>, Constants.MESSAGE.getBytes());</span><br><span class="line">channel.basicPublish(Constants.TOPIC_EXCHANGE_NAME, routingKey3, <span class="keyword">null</span>, Constants.MESSAGE.getBytes());</span><br><span class="line">ChannelFactory.closeResource();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ExchangeTypeTopicConsumer</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Channel channel = ChannelFactory.createChannel();</span><br><span class="line">String queueName = <span class="string">"topic_queue"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// #匹配多个单词 routing.xx.xx</span></span><br><span class="line"><span class="comment">// *只能匹配一个单词 routing.xx</span></span><br><span class="line">String routingKey = <span class="string">"routing.#"</span>;</span><br><span class="line"><span class="comment">// String routingKey = "routing.*";</span></span><br><span class="line"><span class="comment">// 交换机声明，具体参数含义查看文档基本都能看的明白</span></span><br><span class="line">channel.exchangeDeclare(Constants.TOPIC_EXCHANGE_NAME, ExchangeType.TOPIC.getType(),</span><br><span class="line">        <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 队列声明</span></span><br><span class="line">channel.queueDeclare(queueName, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绑定关系</span></span><br><span class="line">channel.queueBind(queueName, Constants.TOPIC_EXCHANGE_NAME, routingKey);</span><br><span class="line"></span><br><span class="line">DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; &#123;</span><br><span class="line">    String message = <span class="keyword">new</span> String(delivery.getBody(), <span class="string">"UTF-8"</span>);</span><br><span class="line">    System.out.println(<span class="string">" Received ' "</span> + message + <span class="string">"'"</span>);</span><br><span class="line">&#125;;</span><br><span class="line">channel.basicConsume(queueName, <span class="keyword">true</span>, deliverCallback, consumerTag -&gt; &#123;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>header 类型 （这种开发中几乎用不到，也很简单，就不在这里演示，想了解的朋友可以自己看看）</p>
+</li>
+</ul>
+<hr>
+<blockquote>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2></blockquote>
+<p> 上完代码是不是觉得很简单呀，【嘿嘿】<br> 代码在这里都可以查看到  <a href="https://github.com/songshuran/practice-rabbitmq" target="_blank" rel="noopener">practice-rabbitmq</a><br> 可以下载下来自己运行查看下效果，前提是你的环境都已经准备好了。<br> 好了这一篇就到这里了<br> Tks for reading！</p>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RMQ安装"><span class="toc-text">RMQ安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RMQ基本功能实操"><span class="toc-text">RMQ基本功能实操</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最后"><span class="toc-text">最后</span></a></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: Oitm</div>
+      
+        <div>
+          原文链接: 
+          <a href="" target="_blank">https://songshuran.github.io/2019/rmq2/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议. 转载请注明出处!
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/tags/后端/"><i class="fa fa-tags"></i>后端</a>
+     
+      <a href="/tags/java/"><i class="fa fa-tags"></i>java</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+      
+        <div class="site-footer-col">
+          <h5 class="site-footer-title">文章推荐</h5>
+          
+            <span class="site-footer-item">
+              <a href="https://songshuran.github.io/passages/rz-sz/" target="_blank">rz、sz命令</a>
+            </span>
+          
+        </div>
+      
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    
+      <div class="site-footer-info">
+        <i class="fa fa-at"></i> Email: happy_ran@outlook.com
+      </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <div class="site-layer-input-choose">
+          <a href="javascript:void(0);" title="Change Search Engine">Google</a>
+        </div>
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/images/alipay.jpeg" alt="AliPay——Just Be Happy!">
+              
+                <p>AliPay——Just Be Happy!</p>
+              
+            </div>
+          
+            <div>
+              <img src="/images/wechat.jpeg" alt="WeChat——Just Be Happy!">
+              
+                <p>WeChat——Just Be Happy!</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/2019/berichdad/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/2019/rmq/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+    <a id="share-btn-twitter" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-twitter"></i>
+    </a>
+  
+  
+    <a id="share-btn-facebook" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-facebook"></i>
+    </a>
+  
+  
+    <a id="share-btn-weibo" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-weibo"></i>
+    </a>
+  
+  
+    <a id="share-btn-qq" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-qq"></i>
+    </a>
+  
+  
+    <a id="share-btn-wechat" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-wechat"></i>
+    </a>
+  
+</div>
+    
+
+
+  <script async>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+
+
+
+
+    
+  </body>
+</html>
